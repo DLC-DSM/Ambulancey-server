@@ -1,4 +1,6 @@
 package org.example.global.auth.Handler;
 
-public class SuccessAutenticationHendler {
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+
+public class SuccessAuthenticationHandler extends SimpleUrlAuthenticationSuccessHandler {
 }

@@ -1,4 +1,4 @@
-package global.exception;
+package org.example.global.exception;
 
 public enum ErrorList {
 }
