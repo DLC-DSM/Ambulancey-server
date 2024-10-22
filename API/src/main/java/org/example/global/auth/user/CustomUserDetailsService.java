@@ -1,6 +1,9 @@
 package org.example.global.auth.user;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.domain.User.UserEntity;
+import org.example.global.auth.user.exception.CannotFoundUserException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,7 +18,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+       UserEntity user = userRepository.findByUsername(username).orElseThrow(CannotFoundUserException::new);
+
+       return CustomUserDetails.builder()
+               .username(user.getUsername())
+               .password(user.getPassword())
+               .authorities(user.getUserRoles())
+               .build();
     }
 }
