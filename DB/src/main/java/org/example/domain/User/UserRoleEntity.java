@@ -1,10 +1,11 @@
 package org.example.domain.User;
 
 import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
+import lombok.Data;
 
+@Data
 @Entity
-public class UserRoleEntity implements GrantedAuthority {
+public class UserRoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -12,8 +13,4 @@ public class UserRoleEntity implements GrantedAuthority {
     private UserEntity user;
     private String role;
 
-    @Override
-    public String getAuthority() {
-        return role;
-    }
 }
