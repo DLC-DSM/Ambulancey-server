@@ -24,7 +24,7 @@ public class HospitalEntity {
     @Column(name = "hospital_type")
     private String hospitalType;
 
-    @Column(name = "hospital_opne_time")
+    @Column(name = "hospital_open_time")
     private Date hospitalDate;
 
     @Column(name = "hospital_open")
