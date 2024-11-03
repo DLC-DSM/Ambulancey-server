@@ -16,6 +16,8 @@ public class Hospital {
 
     private String hospitalName;
 
+    private String hospitalDescription;
+
     @LocalAddress
     private String hospitalAddress;
 

@@ -25,7 +25,10 @@ public class HospitalEntity {
     private String hospitalType;
 
     @Column(name = "hospital_open_time")
-    private Date hospitalDate;
+    private Date hospitalOpenDate;
+
+    @Column(name = "hospital_close_time")
+    private Date hospitalCloseDate;
 
     @Column(name = "hospital_open")
     private boolean isOpen;
