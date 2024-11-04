@@ -1,7 +1,5 @@
 package org.example.domain.hospital.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
@@ -12,7 +10,7 @@ import java.util.Date;
 
 @Data
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class Hospital {
+public class HospitalRequest {
 
     private String hospitalName;
 
@@ -29,4 +27,5 @@ public class Hospital {
 
     @PhoneNumber
     private String phoneNumber;
+
 }

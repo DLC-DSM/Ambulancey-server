@@ -5,6 +5,7 @@ import lombok.Data;
 import org.example.annotation.PhoneNumber;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "hospital_list")
@@ -39,4 +40,7 @@ public class HospitalEntity {
 
     @Column(name = "hospital_address")
     private String address;
+
+    @OneToMany
+    private List<HospitalReviewEntity> reviews;
 }

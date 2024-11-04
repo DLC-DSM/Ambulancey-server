@@ -1,8 +1,7 @@
 package org.example.domain.hospital.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.domain.Hospital.HospitalEntity;
-import org.example.domain.hospital.dto.Hospital;
+import org.example.domain.hospital.dto.HospitalRequest;
 import org.example.domain.hospital.service.HospitalService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,7 +15,7 @@ public class hospitalController{
     private final HospitalService hospitalService;
 
     @PostMapping("/application")
-    public void hospitalApplication(Hospital hospital){
+    public void hospitalApplication(HospitalRequest hospital){
         hospitalService.application(hospital);
     }
 

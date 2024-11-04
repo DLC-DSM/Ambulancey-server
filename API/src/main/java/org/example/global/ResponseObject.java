@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -22,6 +24,8 @@ public class ResponseObject<T> {
     private T data;
 
     private ErrorResponse error;
+
+
 
     @Data
     @AllArgsConstructor
