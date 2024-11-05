@@ -2,6 +2,8 @@ package org.example.domain.Hospital;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.annotation.PhoneNumber;
 
 import java.util.Date;
@@ -9,7 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "hospital_list")
-@Data
+@Getter
+@Setter
 public class HospitalEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

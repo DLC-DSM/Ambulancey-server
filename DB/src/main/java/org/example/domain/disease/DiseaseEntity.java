@@ -18,4 +18,6 @@ public class DiseaseEntity {
     private List<DiseaseSignalEntity> signal;
 
     private Boolean needHospital;
+
+
 }

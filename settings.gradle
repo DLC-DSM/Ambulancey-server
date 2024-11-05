@@ -1,4 +1,4 @@
 rootProject.name = 'ambulancey-server'
-include 'DB'
 include 'API'
+include 'DB'
 

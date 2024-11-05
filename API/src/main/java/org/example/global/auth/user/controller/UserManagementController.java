@@ -12,6 +12,6 @@ public class UserManagementController {
 
     @PostMapping("/register")
     public RequestEntity<String> userRegister(){
-
+        return null;
     }
 }

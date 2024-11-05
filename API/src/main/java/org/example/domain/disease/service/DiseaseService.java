@@ -25,10 +25,7 @@ public class DiseaseService {
         List<Disease> diseaseList = new ArrayList<>();
 
         diseaseEntities.stream().forEach(entity -> {
-
-            entity.getSignal().forEach(signal -> {
-                signals.add(signal.toString());
-            });
+            entity.getSignal();
 
             Disease disease = Disease.builder()
                     .name(entity.getName())
@@ -40,6 +37,11 @@ public class DiseaseService {
         });
 
         return diseaseList;
+    }
+
+
+    public Disease getDisease(String id){
+        return null;
     }
 
 }

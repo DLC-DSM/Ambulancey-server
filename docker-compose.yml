@@ -1,5 +1,14 @@
 version: "3"
 services:
+  api:
+    image: amb_server:latest
+    build:
+      dockerfile: ./API/Dockerfile
+    ports:
+      - "8030:8080"
+    networks:
+      - backend
+
   mysql:
     image: mysql:latest
     restart: always
