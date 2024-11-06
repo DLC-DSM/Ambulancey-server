@@ -3,6 +3,8 @@ services:
   api:
     restart: on-failure
     image: kimsee/dev
+    build:
+      dockerfile: API/Dockerfile
     ports:
       - "8030:8080"
     depends_on:
