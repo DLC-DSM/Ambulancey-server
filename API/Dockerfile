@@ -6,7 +6,7 @@ LABEL authors="user"
 
 VOLUME /tmp
 
-ARG JAR_FILE=./build/libs/*.jar
+ARG JAR_FILE=./API/build/libs/API-1.0-SNAPSHOT.jar
 COPY ${JAR_FILE} app.jar
 
 

@@ -42,7 +42,7 @@ jobs:
           envs: GITHUB_SHA
           script: |
             cd Ambulancey-server
-            sudo docker rm -f $(docker ps -qa)
+            docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
             sudo docker pull ${{ secrets.DOCKER_REPO }}/dev
             docker-compose up --build -d
             docker image prune -f
