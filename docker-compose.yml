@@ -23,7 +23,7 @@ services:
     environment:
       - MYSQL_DATABASE:ambulancey
       - MYSQL_ROOT_PASSWORD=1234
-      - TZ = Asia/Seoul
+      - TZ=Asia/Seoul
       - ./mysql/conf.d:/var/lib/mysql
     networks:
       - backend
