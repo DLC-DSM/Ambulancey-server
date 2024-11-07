@@ -48,7 +48,7 @@ public class HospitalService {
 
     @Transactional
     public void HospitalUpdate (HospitalRequest hospital) {
-        if (!hospitalRepository.canFindByhospitalName(hospital.getHospitalName())) {
+        if (hospitalRepository.findByHospitalName(hospital.getHospitalName()).isEmpty()) {
             throw new NoHospitalException();
         }
         HospitalEntity hospitalEntity = makeHospitalEntity(hospital);
@@ -58,7 +58,7 @@ public class HospitalService {
     @Transactional
     public boolean application(HospitalRequest hospital){
 
-        if(hospitalRepository.canFindByhospitalName(hospital.getHospitalName())){
+        if(hospitalRepository.findByHospitalName(hospital.getHospitalName()).isEmpty()){
             return false;
         }
         HospitalEntity hospitalEntity = makeHospitalEntity(hospital);

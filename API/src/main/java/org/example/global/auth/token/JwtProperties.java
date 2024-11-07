@@ -1,16 +1,17 @@
 package org.example.global.auth.token;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@Getter
+@Data
 @Component
 @ConfigurationProperties(prefix = "jwt")
 public class JwtProperties {
     String prefix;
     String secret;
     String header;
-    String expiration_access;
+    Long expiration_access = 1000*60*60*24L;
 }

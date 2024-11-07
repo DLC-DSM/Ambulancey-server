@@ -43,11 +43,11 @@ public class SecurityConfig{
 
 
                 .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                .anyRequest().authenticated()
+                            authorizeRequests
                                 .requestMatchers("/hospital/application","/hospital/update","/hospital/delete").hasAuthority("")
-                        )
-                .userDetailsService(customUserDetailsService)
+                                    .anyRequest().authenticated()
+                )
+
 
                 .sessionManagement((session)->{
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

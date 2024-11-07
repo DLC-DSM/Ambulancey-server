@@ -17,7 +17,6 @@ public interface HospitalRepository extends JpaRepository<HospitalEntity,Long> {
 
     Optional<HospitalEntity> findByHospitalName(String hospitalName);
 
-    Boolean canFindByhospitalName(String hospitalName);
 
     // 송정동 -> 부산, 서울 둘다 존재.
 }
