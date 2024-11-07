@@ -44,7 +44,8 @@ public class SecurityConfig{
 
                 .authorizeHttpRequests(authorizeRequests ->
                             authorizeRequests
-                                .requestMatchers("/hospital/application","/hospital/update","/hospital/delete").hasAuthority("")
+                                    .requestMatchers("/login","/user/register").permitAll()
+                                    .requestMatchers("/hospital/application","/hospital/update","/hospital/delete").hasAuthority("")
                                     .anyRequest().authenticated()
                 )
 

@@ -8,7 +8,7 @@ services:
     depends_on: #7
       - mysql
     environment: #8
-        SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/test_db?characterEncoding=UTF-8&serverTimezone=UTC&&allowPublicKeyRetrieval=true&useSSL=false
+        SPRING_DATASOURCE_URL: jdbc:mysql://ambulancey-server_backend:3222/ambulancey?characterEncoding=UTF-8&serverTimezone=UTC&&allowPublicKeyRetrieval=true&useSSL=false
         SPRING_DATASOURCE_USERNAME: root
         SPRING_DATASOURCE_PASSWORD: 1234
     networks:
