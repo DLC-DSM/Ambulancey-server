@@ -6,6 +6,7 @@ import org.example.domain.disease.service.DiseaseService;
 import org.example.domain.hospital.service.HospitalService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -20,8 +21,8 @@ public class DiseaseController {
         return diseaseService.getDisease();
     }
 
-    @GetMapping("/diease/{}")
-    public Disease getDisease(){
-        return null;
+    @GetMapping("/diease/{id}")
+    public Disease getDisease(@PathVariable Long id){
+        return diseaseService.getDisease(id);
     }
 }

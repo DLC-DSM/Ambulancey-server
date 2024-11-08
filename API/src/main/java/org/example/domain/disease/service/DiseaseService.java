@@ -40,8 +40,21 @@ public class DiseaseService {
     }
 
 
-    public Disease getDisease(String id){
-        return null;
+    public Disease getDisease(Long id){
+        List<String> signals = new ArrayList<>();
+
+
+        DiseaseEntity entity = diseaseRepository.findById(id).orElseThrow(RuntimeException::new);
+            entity.getSignal().forEach(e->{
+                signals.add(e.getSignalName());
+            });
+            Disease disease = Disease.builder()
+                    .name(entity.getName())
+                    .description(entity.getInfo())
+                    .isHosp(entity.getNeedHospital())
+                    .diseaseSignal(signals)
+                    .build();
+            return disease;
     }
 
 }
