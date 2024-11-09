@@ -1,16 +1,24 @@
 package org.example.domain.hospital.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.domain.Hospital.HospitalEntity;
+import org.example.domain.Hospital.HospitalManagerEntity;
+import org.example.domain.User.UserEntity;
+import org.example.domain.User.UserRoleEntity;
 import org.example.domain.hospital.dto.HospitalRequest;
 import org.example.domain.hospital.dto.HospitalLocation;
 import org.example.domain.hospital.dto.KakaoRequestBody;
 import org.example.domain.hospital.exception.InvalidAddressException;
 import org.example.domain.hospital.exception.NoHospitalException;
+import org.example.repository.HospitalManagerRepository;
 import org.example.repository.HospitalRepository;
+
+import org.example.repository.UserRepository;
+import org.springframework.data.crossstore.ChangeSetPersister;
+
 import org.springframework.http.*;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -18,12 +26,13 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class HospitalService {
     private final HospitalRepository hospitalRepository;
+    private final UserRepository userRepository;
+    private final HospitalManagerRepository hospitalManagerRepository;
 
     @Transactional
     public List<HospitalRequest> getLocationSearch(@Valid HospitalLocation location) {
@@ -62,6 +71,15 @@ public class HospitalService {
     }
 
     @Transactional
+    public void hospital_manage(String username,String role) throws ChangeSetPersister.NotFoundException {
+        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(ChangeSetPersister.NotFoundException::new);
+        HospitalManagerEntity hospitalManagerEntity = hospitalManagerRepository.findByUser(userEntity).orElseThrow(ChangeSetPersister.NotFoundException::new);
+
+        hospitalManagerEntity.setHospitalRole(role);
+        hospitalManagerRepository.save(hospitalManagerEntity);
+    }
+
+    @Transactional
     public void HospitalUpdate (HospitalRequest hospital) {
         if (hospitalRepository.findByHospitalName(hospital.getHospitalName()).isEmpty()) {
             throw new NoHospitalException();
@@ -71,15 +89,19 @@ public class HospitalService {
     }
 
     @Transactional
-    public boolean application(HospitalRequest hospital){
+    public boolean application(HospitalRequest hospital,String username) throws ChangeSetPersister.NotFoundException {
 
         if(hospitalRepository.findByHospitalName(hospital.getHospitalName()).isEmpty()){
             return false;
         }
         HospitalEntity hospitalEntity = makeHospitalEntity(hospital);
 
-
         hospitalRepository.save(hospitalEntity);
+        UserEntity user = userRepository.findByUsername(username).orElseThrow(ChangeSetPersister.NotFoundException::new);
+        UserRoleEntity userRoleEntity = new UserRoleEntity();
+        userRoleEntity.setUser(user);
+        userRoleEntity.setRole("ROLE_HOSPITAL");
+        user.getUserRoles().add(userRoleEntity);
         return true;
     }
 

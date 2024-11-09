@@ -3,7 +3,7 @@ package org.example.global.auth.Handler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.global.auth.jwt.JwtProvider;
+import org.example.global.auth.token.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.example.global.auth.user.CustomUserDetails;
 import org.springframework.security.core.Authentication;

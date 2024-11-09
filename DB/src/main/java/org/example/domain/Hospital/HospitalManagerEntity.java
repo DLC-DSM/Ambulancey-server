@@ -1,29 +1,27 @@
-package org.example.domain.User;
+package org.example.domain.Hospital;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.example.annotation.LocalAddress;
-import org.example.annotation.PhoneNumber;
-import org.example.domain.Hospital.HospitalEntity;
-
-import java.util.Date;
+import org.example.domain.User.UserEntity;
 
 @Data
 @Entity
 @Table(name = "hospital_manager")
 public class HospitalManagerEntity {
-    @Id
+
+    @EmbeddedId
+    private HospitalManagerId id;
+
     @ManyToOne(optional = false)
+    @MapsId("userKey")  // 복합 키의 userKey 필드를 매핑
     @JoinColumn(name = "user_key", nullable = false)
     private UserEntity user;
 
-    @Id
     @ManyToOne(optional = false)
+    @MapsId("hospitalId")  // 복합 키의 hospitalId 필드를 매핑
     @JoinColumn(name = "hospital_id", nullable = false)
     private HospitalEntity hospital;
 
     @Column(name = "hospital_role")
     private String hospitalRole;
-
-
 }
