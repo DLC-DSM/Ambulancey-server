@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.global.auth.token.JwtProperties;
 import org.example.global.auth.user.CustomUserDetails;
 import org.example.global.auth.user.CustomUserDetailsService;
@@ -23,6 +24,7 @@ import java.util.Date;
 import java.util.Map;
 
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtProvider {
@@ -49,7 +51,8 @@ public class JwtProvider {
 //    }
 
     public Boolean isTokenExpired(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseClaimsJws(token).getPayload().getExpiration().before(new Date());
+        log.info("exp");
+        return Jwts.parser().verifyWith(secretKey).build().parseClaimsJws(token).getPayload().getExpiration().before(new Date(System.currentTimeMillis()));
     }
 
     public String getUsername(String token) {
@@ -69,6 +72,7 @@ public class JwtProvider {
             return null;
         }
         if (header.startsWith(jwtProperties.getPrefix())) {
+            log.info("info of token:"+header.substring(jwtProperties.getPrefix().length()));
             return header.substring(jwtProperties.getPrefix().length());
         }
 

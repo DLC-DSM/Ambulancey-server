@@ -13,5 +13,5 @@ public class JwtProperties {
     String prefix;
     String secret;
     String header;
-    Long expiration_access = 1000*60*60*24L;
+    Long expiration_access = 1000*60*60*60*24L;
 }

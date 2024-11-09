@@ -34,6 +34,7 @@ public class UserManagementService {
         userRoleRepository.save(userRoleEntity);
     }
 
+
     @Transactional
     public void deleteUser(String username) {
         UserEntity userEntity = userRepository.findByUsername(username)
@@ -41,11 +42,10 @@ public class UserManagementService {
         userRepository.delete(userEntity);
     }
 
-    public void updateUsername(User user){
-        UserEntity userEntity = new UserEntity();
-        if(user.getUsername() != null){
-            userEntity.setUsername(user.getUsername());
-        }
+    public void updateUsername(User user, String username) {
+        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(CannotFoundUserException::new);
+        userEntity.setUsername(user.getUsername());
+        userEntity.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(userEntity);
     }
 

@@ -47,7 +47,7 @@ public class SecurityConfig{
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
 
-
+                .logout(logout -> logout.logoutUrl("/user/logout"))
                 .authorizeHttpRequests(authorizeRequests ->
                             authorizeRequests
                                     .requestMatchers("/user/login","/user/register").permitAll()
