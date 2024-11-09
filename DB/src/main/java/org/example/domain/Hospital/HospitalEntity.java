@@ -44,6 +44,6 @@ public class HospitalEntity {
     @Column(name = "hospital_address")
     private String address;
 
-    @OneToMany
+    @OneToMany(mappedBy = "hospitalId")
     private List<HospitalReviewEntity> reviews;
 }

@@ -12,7 +12,7 @@ public class UserRoleEntity {
     @Column(name = "role_id")
     private long id;
     @ManyToOne
-    @JoinColumn(name = "user_key")
+    @JoinColumn(name = "user_key", referencedColumnName = "user_key")
     private UserEntity user;
     private String role;
 

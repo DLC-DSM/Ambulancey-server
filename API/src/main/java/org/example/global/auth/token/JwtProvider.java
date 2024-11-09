@@ -1,4 +1,4 @@
-package org.example.global.auth.jwt;
+package org.example.global.auth.token;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

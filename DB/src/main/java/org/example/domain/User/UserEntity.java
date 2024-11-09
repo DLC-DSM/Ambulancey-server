@@ -13,7 +13,7 @@ import java.util.List;
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_key")
+    @Column(name = "user_key",nullable = false)
     private Long id;
 
     @Column(unique = true, nullable = false)
@@ -22,6 +22,6 @@ public class UserEntity {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private List<UserRoleEntity> userRoles;
 }

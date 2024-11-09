@@ -2,6 +2,7 @@ package org.example.global.auth.user;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.domain.User.UserEntity;
 import org.example.global.auth.user.exception.CannotFoundUserException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,6 +15,7 @@ import org.example.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -24,6 +26,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info("들어옴");
+        log.info("username: {}", username);
        UserEntity user = userRepository.findByUsername(username).orElseThrow(CannotFoundUserException::new);
 
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
