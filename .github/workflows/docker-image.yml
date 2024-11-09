@@ -44,8 +44,8 @@ jobs:
             cd ambulancey-docker-com
             docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
             sudo docker pull ${{ secrets.DOCKER_REPO }}/dev
-            docker-compose up --build -d
-            docker image prune -f
+            sudo docker-compose up --build -d
+            sudo docker image prune -f
 
     
 
