@@ -41,7 +41,7 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
-            cd Ambulancey-server
+            cd ambulancey-docker-com
             docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
             sudo docker pull ${{ secrets.DOCKER_REPO }}/dev
             docker-compose up --build -d
