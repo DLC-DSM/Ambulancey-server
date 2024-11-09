@@ -6,8 +6,11 @@ import org.example.domain.Hospital.HospitalEntity;
 import org.example.domain.hospital.dto.HospitalLocation;
 import org.example.domain.hospital.dto.HospitalRequest;
 import org.example.domain.hospital.service.HospitalService;
+import org.example.global.auth.user.CustomUserDetails;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +24,9 @@ public class hospitalController{
     private final HospitalService hospitalService;
 
     @PostMapping("/application")
-    public void hospitalApplication(HospitalRequest hospital){
-        hospitalService.application(hospital);
+    public void hospitalApplication(HospitalRequest hospital, Authentication authentication) throws ChangeSetPersister.NotFoundException {
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        hospitalService.application(hospital,customUserDetails.getUsername());
     }
 
     @PutMapping("/update")
@@ -31,8 +35,8 @@ public class hospitalController{
     }
 
     @DeleteMapping("/resign")
-    public void hospitalResign(){
-        
+    public void hospitalResign(String hospitalName){
+        hospitalService.deleteHospital(hospitalName);
     }
 
     @GetMapping("/list")
@@ -42,7 +46,7 @@ public class hospitalController{
     }
 
     @GetMapping("/info")
-    public ResponseEntity<? extends Object> getHospitalInfo(){
+    public ResponseEntity<? extends Object> getHospitalInfo(Long hospitalId){
         return null;
     }
 
