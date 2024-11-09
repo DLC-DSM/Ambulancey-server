@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.domain.Hospital.HospitalEntity;
 import org.example.domain.hospital.dto.HospitalLocation;
 import org.example.domain.hospital.dto.HospitalRequest;
+import org.example.domain.hospital.dto.HospitalResponse;
 import org.example.domain.hospital.service.HospitalService;
 import org.example.global.auth.user.CustomUserDetails;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -41,7 +42,7 @@ public class hospitalController{
 
     @GetMapping("/list")
     public ResponseEntity<? extends Object> getHospitalList(@Valid HospitalLocation location){
-        List<HospitalRequest> list = hospitalService.getLocationSearch(location);
+        List<HospitalResponse> list = hospitalService.getLocationSearch(location);
         return new ResponseEntity<List>(list, HttpStatusCode.valueOf(200));
     }
 

@@ -6,14 +6,14 @@ import org.example.domain.Hospital.HospitalEntity;
 import org.example.domain.Hospital.HospitalManagerEntity;
 import org.example.domain.User.UserEntity;
 import org.example.domain.User.UserRoleEntity;
-import org.example.domain.hospital.dto.HospitalRequest;
-import org.example.domain.hospital.dto.HospitalLocation;
-import org.example.domain.hospital.dto.KakaoRequestBody;
+import org.example.domain.hospital.dto.*;
 import org.example.domain.hospital.exception.InvalidAddressException;
 import org.example.domain.hospital.exception.NoHospitalException;
+import org.example.domain.review.ReviewEntity;
 import org.example.repository.HospitalManagerRepository;
 import org.example.repository.HospitalRepository;
 
+import org.example.repository.ReviewRepository;
 import org.example.repository.UserRepository;
 import org.springframework.data.crossstore.ChangeSetPersister;
 
@@ -33,9 +33,10 @@ public class HospitalService {
     private final HospitalRepository hospitalRepository;
     private final UserRepository userRepository;
     private final HospitalManagerRepository hospitalManagerRepository;
+    private final ReviewRepository reviewRepository;
 
     @Transactional
-    public List<HospitalRequest> getLocationSearch(@Valid HospitalLocation location) {
+    public List<HospitalResponse> getLocationSearch(@Valid HospitalLocation location) {
         List<HospitalEntity> entity = hospitalRepository.findAll();
         entity.sort((a, b)->{
             double aLatitude = a.getLatitude()-location.latitude()*a.getLatitude()-location.latitude();
@@ -46,10 +47,10 @@ public class HospitalService {
             double bDistance = bLatitude+bLongitude;
             return Double.compare(aDistance, bDistance);
         });
-        List<HospitalRequest> hospitals = new ArrayList<>();
+        List<HospitalResponse> hospitals = new ArrayList<>();
 
         entity.stream().forEach(e -> {
-            HospitalRequest hospital = makeHospital(e);
+            HospitalResponse hospital = makeHospital(e);
             hospitals.add(hospital);
         });
         return hospitals;
@@ -57,10 +58,9 @@ public class HospitalService {
     }
 
     @Transactional
-    public HospitalRequest getHospital(String hospitalName) {
+    public HospitalResponse getHospital(String hospitalName) {
         HospitalEntity hospitalEntity = hospitalRepository.findByHospitalName(hospitalName).orElseThrow(NoHospitalException::new);
-        HospitalRequest hospital = makeHospital(hospitalEntity);
-        return hospital;
+        return makeHospital(hospitalEntity);
 
     }
 
@@ -105,8 +105,18 @@ public class HospitalService {
         return true;
     }
 
-    public HospitalRequest makeHospital(HospitalEntity hospitalEntity) {
-        HospitalRequest hospital = new HospitalRequest();
+    public HospitalResponse makeHospital(HospitalEntity hospitalEntity) {
+        List<ReviewEntity> reviewEntitys = reviewRepository.findByHospital(hospitalEntity);
+        List<HospitalReviewsResponse> reviews = reviewEntitys.stream().map(
+                a->new HospitalReviewsResponse(
+                        a.getUser().getUsername(),
+                        a.getContent(),
+                        a.getStar(),
+                        a.getId()
+                )
+        ).toList();
+
+        HospitalResponse hospital = new HospitalResponse();
 
         hospital.setHospitalName(hospitalEntity.getHospitalName());
         hospital.setHospitalOpneDate(hospitalEntity.getHospitalOpenDate());
@@ -115,11 +125,12 @@ public class HospitalService {
         hospital.setHospitalType(hospitalEntity.getHospitalType());
         hospital.setHospitalAddress(hospitalEntity.getAddress());
         hospital.setPhoneNumber(hospitalEntity.getNumber());
+        hospital.setHospitalReviews(reviews);
         return hospital;
     }
 
     public HospitalEntity makeHospitalEntity(HospitalRequest hospital) {
-        double[] coordinates = getCoordinates(hospital.getHospitalAddress());
+        HospitalLocation coordinates = getCoordinates(hospital.getHospitalAddress());
         HospitalEntity hospitalEntity = HospitalEntity.builder()
                 .hospitalName(hospital.getHospitalName())
                 .hospitalOpenDate(hospital.getHospitalOpneDate())
@@ -128,12 +139,12 @@ public class HospitalService {
                 .hospitalType(hospital.getHospitalType())
                 .address(hospital.getHospitalAddress())
                 .number(hospital.getPhoneNumber())
-                .latitude(coordinates[0])
-                .longitude(coordinates[1])
+                .latitude(coordinates.latitude())
+                .longitude(coordinates.longitude())
                 .build();
         return hospitalEntity;
     }
-    public double[] getCoordinates(String address) {
+    public HospitalLocation getCoordinates(String address) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","KakaoAK 494978b66f1dba6d8e3fdfc5c402d430");
@@ -141,12 +152,11 @@ public class HospitalService {
                 (headers, HttpMethod.GET, URI.create("https://dapi.kakao.com/v2/local/search/address?size=1&query="+address));
         ResponseEntity<String> response = restTemplate.exchange(request,String.class);
         String responseString = response.getBody();
-        double[] coordinates = new double[2];
+        HospitalLocation coordinates;
         try {
             String y = responseString.substring(responseString.indexOf("y\":\"")+1, responseString.indexOf("\",\"x\""));
             String x = responseString.substring(responseString.indexOf("x\":\"")+1, responseString.indexOf("\",\"address_type"));
-            coordinates[0] = Double.parseDouble(y);
-            coordinates[1] = Double.parseDouble(x);
+            coordinates = new HospitalLocation(Double.parseDouble(y), Double.parseDouble(x));
 
         } catch (NullPointerException e) {
             throw new InvalidAddressException();
