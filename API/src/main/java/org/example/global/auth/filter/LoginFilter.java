@@ -1,9 +1,8 @@
 package org.example.global.auth.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,34 +15,39 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
-
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+        String username;
+        String password;
 
+        try {
+            // JSON 파싱
+            Map<String, String> requestBody = objectMapper.readValue(request.getInputStream(), Map.class);
+            username = requestBody.get("email");
+            password = requestBody.get("password");
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to parse request body", e);
+        }
 
+        logger.info(username + " " + password + " " + request.getMethod());
 
-        String username = obtainUsername(request);
-        String password = obtainPassword(request);
-
-        logger.info(username + " " + password+" "+request.getMethod());
-
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password,null);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
 
         return authenticationManager.authenticate(authToken);
     }
 
-
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
-
         String token = jwtProvider.generateAccessToken(customUserDetails);
 
         response.addHeader("Authorization", "Bearer " + token);
@@ -53,6 +57,4 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         super.unsuccessfulAuthentication(request, response, failed);
     }
-
-
 }

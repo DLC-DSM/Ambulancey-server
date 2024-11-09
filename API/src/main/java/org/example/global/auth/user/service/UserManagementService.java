@@ -23,11 +23,11 @@ public class UserManagementService {
     @Transactional
     public void registerUser(User user) {
         UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(user.getUsername());
+        userEntity.setUsername(user.getEmail());
         userEntity.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(userEntity);
 
-        userEntity = userRepository.findByUsername(user.getUsername()).orElseThrow(CannotFoundUserException::new);
+        userEntity = userRepository.findByUsername(user.getEmail()).orElseThrow(CannotFoundUserException::new);
         UserRoleEntity userRoleEntity = new UserRoleEntity();
         userRoleEntity.setUser(userEntity);
         userRoleEntity.setRole("ROLE_USER");
@@ -44,7 +44,7 @@ public class UserManagementService {
 
     public void updateUsername(User user, String username) {
         UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(CannotFoundUserException::new);
-        userEntity.setUsername(user.getUsername());
+        userEntity.setUsername(user.getEmail());
         userEntity.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(userEntity);
     }
