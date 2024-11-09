@@ -5,7 +5,8 @@ import org.example.annotation.LocalAddress;
 
 
 public record HospitalLocation (
-        @LocalAddress String location
+        double latitude,
+        double longitude
 ){
 
 }

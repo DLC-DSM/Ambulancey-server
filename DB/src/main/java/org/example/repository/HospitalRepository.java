@@ -13,6 +13,8 @@ public interface HospitalRepository extends JpaRepository<HospitalEntity,Long> {
     @Query("SELECT h FROM HospitalEntity h WHERE h.address LIKE CONCAT('%',:locCity,'%') AND h.address LIKE CONCAT('%',:loc,'%')")
     Optional<List<HospitalEntity>> findByLocation(@Param("locCity") String locCity, @Param("loc") String loc);
 
+    List<HospitalEntity> findAll();
+
     HospitalEntity findByAddress(String address);
 
     Optional<HospitalEntity> findByHospitalName(String hospitalName);

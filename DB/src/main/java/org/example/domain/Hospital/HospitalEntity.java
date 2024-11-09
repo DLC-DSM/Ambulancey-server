@@ -1,9 +1,14 @@
 package org.example.domain.Hospital;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import lombok.NoArgsConstructor;
+
 import org.example.annotation.PhoneNumber;
 
 import java.util.Date;
@@ -13,37 +18,43 @@ import java.util.List;
 @Table(name = "hospital_list")
 @Getter
 @Setter
-public class HospitalEntity {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class HospitalEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "hospital_id")
     private long id;
 
-    @Column(name = "hospital_name")
+    @Column(name = "hospital_name", nullable = false)
     private String hospitalName;
 
-    @Column(name = "hospital_text")
+    @Column(name = "hospital_text", nullable = false)
     private String hospitalDescription;
 
-    @Column(name = "hospital_type")
+    @Column(name = "hospital_type", nullable = false)
     private String hospitalType;
 
-    @Column(name = "hospital_open_time")
+    @Column(name = "hospital_open_time", nullable = false)
     private Date hospitalOpenDate;
 
-    @Column(name = "hospital_close_time")
+    @Column(name = "hospital_close_time", nullable = false)
     private Date hospitalCloseDate;
 
-    @Column(name = "hospital_open")
-    private boolean isOpen;
-
     @PhoneNumber
-    @Column(name = "hospital_phone")
+    @Column(name = "hospital_phone", nullable = false)
     private String number;
 
-    @Column(name = "hospital_address")
+    @Column(name = "hospital_address", nullable = false)
     private String address;
 
     @OneToMany(mappedBy = "hospitalId")
     private List<HospitalReviewEntity> reviews;
+
+    @Column(name = "latitude", nullable = false)
+    private double latitude;
+    @Column(name = "longitude", nullable = false)
+    private double longitude;
 }
