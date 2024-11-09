@@ -65,6 +65,9 @@ public class JwtProvider {
     public String getToken(HttpServletRequest request) {
         String header = request.getHeader(jwtProperties.getHeader());
 
+        if (header == null){
+            return null;
+        }
         if (header.startsWith(jwtProperties.getPrefix())) {
             return header.substring(jwtProperties.getPrefix().length());
         }

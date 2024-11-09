@@ -2,25 +2,25 @@ package org.example.global.config;
 
 import lombok.RequiredArgsConstructor;
 import org.example.global.auth.Handler.SuccessAuthenticationHandler;
-import org.example.global.auth.filter.jwtFilter;
+import org.example.global.auth.filter.JwtFilter;
 import org.example.global.auth.user.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.example.global.auth.jwt.JwtProvider;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig{
 
-    private final jwtFilter filter;
+    private final JwtProvider jwtProvider;
     private final SuccessAuthenticationHandler successAuthenticationHandler;
     private final CustomUserDetailsService customUserDetailsService;
 
@@ -35,11 +35,7 @@ public class SecurityConfig{
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .formLogin(form ->
-                            form
-                                    .successHandler(successAuthenticationHandler)
-
-                        )
+                .formLogin(form -> form.successHandler(successAuthenticationHandler))
 
 
                 .authorizeHttpRequests(authorizeRequests ->
@@ -53,7 +49,7 @@ public class SecurityConfig{
                 .sessionManagement((session)->{
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
-                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
 
 
         return http.build();
