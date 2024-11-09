@@ -1,10 +1,9 @@
 package org.example.domain.hospital.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.domain.Hospital.HospitalEntity;
-import org.example.domain.User.HospitalManagerEntity;
+import org.example.domain.Hospital.HospitalManagerEntity;
 import org.example.domain.User.UserEntity;
 import org.example.domain.User.UserRoleEntity;
 import org.example.domain.hospital.dto.HospitalRequest;
@@ -17,7 +16,6 @@ import org.example.repository.HospitalRepository;
 
 import org.example.repository.UserRepository;
 import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.security.core.Authentication;
 
 import org.springframework.http.*;
 
@@ -28,7 +26,6 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
