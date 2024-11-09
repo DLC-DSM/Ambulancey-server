@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.global.auth.user.CustomUserDetails;
 import org.example.global.auth.user.dto.User;
+import org.example.global.auth.user.dto.UserReq;
 import org.example.global.auth.user.dto.UserResponse;
 import org.example.global.auth.user.service.UserManagementService;
 import org.springframework.http.RequestEntity;
@@ -20,7 +21,7 @@ public class UserManagementController {
     private final UserManagementService userManagementService;
 
     @PostMapping("/register")
-    public void  userRegister(@RequestBody User user) {
+    public void  userRegister(@RequestBody UserReq user) {
         userManagementService.registerUser(user);
     }
 
@@ -28,7 +29,7 @@ public class UserManagementController {
     public ResponseEntity<UserResponse> getUser(Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         UserResponse user = new UserResponse();
-        user.setEmail(userDetails.getUsername());
+        user.setUsername(userDetails.getUsername());
         user.setPassword(userDetails.getPassword());
         user.setAuthorities(userDetails.authorities());
         return ResponseEntity.ok(user);

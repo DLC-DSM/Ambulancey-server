@@ -28,11 +28,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String username;
         String password;
+        String email;
 
         try {
             // JSON 파싱
             Map<String, String> requestBody = objectMapper.readValue(request.getInputStream(), Map.class);
-            username = requestBody.get("email");
+            email = requestBody.get("email");
+            username = requestBody.get("username");
             password = requestBody.get("password");
         } catch (IOException e) {
             throw new RuntimeException("Failed to parse request body", e);
