@@ -8,13 +8,20 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "user")
 @Data
 public class UserEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_key")
+    private Long id;
+
+    @Column(unique = true, nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String password;
+
     @OneToMany
-    List<UserRoleEntity> userRoles;
+    private List<UserRoleEntity> userRoles;
 }
