@@ -1,7 +1,10 @@
 package org.example.domain.hospital.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.domain.Hospital.HospitalEntity;
 import org.example.domain.Hospital.HospitalManagerEntity;
 import org.example.domain.User.UserEntity;
@@ -24,9 +27,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class HospitalService {
@@ -89,19 +95,27 @@ public class HospitalService {
     }
 
     @Transactional
-    public boolean application(HospitalRequest hospital,String username) throws ChangeSetPersister.NotFoundException {
+    public boolean application(HospitalRequest hospital,String username) throws Exception {
 
-        if(hospitalRepository.findByHospitalName(hospital.getHospitalName()).isEmpty()){
+        if(!hospitalRepository.findByHospitalName(hospital.getHospitalName()).isEmpty()){
             return false;
         }
         HospitalEntity hospitalEntity = makeHospitalEntity(hospital);
 
+        log.info(hospitalEntity.getHospitalName());
+        log.info(hospitalEntity.getAddress());
+        log.info(hospitalEntity.getHospitalOpenDate().toString());
         hospitalRepository.save(hospitalEntity);
+        log.info("save hospital is good");
+
         UserEntity user = userRepository.findByUsername(username).orElseThrow(ChangeSetPersister.NotFoundException::new);
         UserRoleEntity userRoleEntity = new UserRoleEntity();
         userRoleEntity.setUser(user);
         userRoleEntity.setRole("ROLE_HOSPITAL");
         user.getUserRoles().add(userRoleEntity);
+        userRepository.save(user);
+        log.info("save is good");
+
         return true;
     }
 
@@ -130,6 +144,7 @@ public class HospitalService {
     }
 
     public HospitalEntity makeHospitalEntity(HospitalRequest hospital) {
+        log.info(hospital.getHospitalName());
         HospitalLocation coordinates = getCoordinates(hospital.getHospitalAddress());
         HospitalEntity hospitalEntity = HospitalEntity.builder()
                 .hospitalName(hospital.getHospitalName())
@@ -145,22 +160,36 @@ public class HospitalService {
         return hospitalEntity;
     }
     public HospitalLocation getCoordinates(String address) {
+        log.info(address);
+        String encodedAddress = URLEncoder.encode(address, StandardCharsets.UTF_8);
+        String url = "https://dapi.kakao.com/v2/local/search/address?size=1&query="+encodedAddress;
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","KakaoAK 494978b66f1dba6d8e3fdfc5c402d430");
         RequestEntity<KakaoRequestBody> request = new RequestEntity<>
-                (headers, HttpMethod.GET, URI.create("https://dapi.kakao.com/v2/local/search/address?size=1&query="+address));
+                (headers, HttpMethod.GET, URI.create(url));
         ResponseEntity<String> response = restTemplate.exchange(request,String.class);
         String responseString = response.getBody();
         HospitalLocation coordinates;
+        log.info(responseString);
         try {
-            String y = responseString.substring(responseString.indexOf("y\":\"")+1, responseString.indexOf("\",\"x\""));
-            String x = responseString.substring(responseString.indexOf("x\":\"")+1, responseString.indexOf("\",\"address_type"));
-            coordinates = new HospitalLocation(Double.parseDouble(y), Double.parseDouble(x));
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(responseString);
+            JsonNode documentsNode = rootNode.path("documents");
 
-        } catch (NullPointerException e) {
+            if (documentsNode.isArray() && documentsNode.size() > 0) {
+                JsonNode locationNode = documentsNode.get(0);
+                double y = locationNode.path("y").asDouble();
+                double x = locationNode.path("x").asDouble();
+                coordinates = new HospitalLocation(y, x);
+            } else {
+                throw new InvalidAddressException();
+            }
+        } catch (Exception e) {
+            log.error("Error parsing coordinates from response", e);
             throw new InvalidAddressException();
         }
+
         return coordinates;
     }
 }

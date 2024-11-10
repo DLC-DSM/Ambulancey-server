@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 
 import org.example.annotation.PhoneNumber;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +27,7 @@ import java.util.List;
 @Builder
 public class HospitalEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "hospital_id")
     private long id;
 
@@ -38,10 +41,10 @@ public class HospitalEntity{
     private String hospitalType;
 
     @Column(name = "hospital_open_time", nullable = false)
-    private Date hospitalOpenDate;
+    private LocalTime hospitalOpenDate;
 
     @Column(name = "hospital_close_time", nullable = false)
-    private Date hospitalCloseDate;
+    private LocalTime hospitalCloseDate;
 
     @PhoneNumber
     @Column(name = "hospital_phone", nullable = false)

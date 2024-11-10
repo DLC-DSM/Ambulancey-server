@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.example.global.auth.token.JwtProvider;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
 public class SecurityConfig{
 
@@ -40,7 +40,7 @@ public class SecurityConfig{
 
     @Bean
     public SecurityFilterChain SecurityConfig(HttpSecurity http) throws Exception {
-        LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration),jwtProvider);
+        LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration),jwtProvider,customUserDetailsService);
         loginFilter.setFilterProcessesUrl("/user/login");
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -51,7 +51,8 @@ public class SecurityConfig{
                 .authorizeHttpRequests(authorizeRequests ->
                             authorizeRequests
                                     .requestMatchers("/user/login","/user/register").permitAll()
-                                    .requestMatchers("/hospital/application","/hospital/update","/hospital/delete").hasAuthority("")
+                                    .requestMatchers("/hospital/application","/hospital/list","hospital/info").hasAuthority("ROLE_USER")
+                                    .requestMatchers("/hospital/*").hasAuthority("ROLE_HOSPITAL")
                                     .anyRequest().authenticated()
                 )
 

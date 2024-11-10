@@ -9,8 +9,9 @@
       properties:
         hibernate:
           dialect: org.hibernate.dialect.MySQLDialect
+          show_sql: true
   jwt:
-    prefix: ${JWT_PROFIX:Bearer}
+    prefix: ${JWT_PROFIX:Bearer }
     header: ${JWT_HEADER:Authorization}
     secret: ${JWT_SECRET:whsrudgksmsrnralssddusdafasF1234fjqns}
   #expiration_refresh: ${1000*60*60*48}
