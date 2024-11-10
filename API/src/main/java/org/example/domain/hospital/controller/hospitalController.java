@@ -44,7 +44,7 @@ public class hospitalController{
 
     @PutMapping("/update")
     public void hospitalUpdate(HospitalRequest hospital){
-        hospitalService.HospitalUpdate(hospital);
+        hospitalService.HospitalUpdate(hospital,hospital.getId());
     }
 
     @DeleteMapping("/resign")
@@ -66,6 +66,8 @@ public class hospitalController{
 
         return ResponseEntity.ok(hospitalResponse);
     }
+
+
 
 
 

@@ -1,5 +1,6 @@
 package org.example.domain.hospital.dto;
 
+import jakarta.persistence.Id;
 import lombok.Data;
 import org.example.annotation.LocalAddress;
 import org.example.annotation.PhoneNumber;
@@ -10,6 +11,9 @@ import java.util.List;
 
 @Data
 public class HospitalResponse {
+
+    private Long id;
+
     private String hospitalName;
 
     private String hospitalDescription;

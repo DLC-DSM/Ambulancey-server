@@ -2,7 +2,6 @@ package org.example.domain.hospital.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.domain.Hospital.HospitalEntity;
@@ -13,11 +12,8 @@ import org.example.domain.hospital.dto.*;
 import org.example.domain.hospital.exception.InvalidAddressException;
 import org.example.domain.hospital.exception.NoHospitalException;
 import org.example.domain.review.ReviewEntity;
-import org.example.repository.HospitalManagerRepository;
-import org.example.repository.HospitalRepository;
+import org.example.repository.*;
 
-import org.example.repository.ReviewRepository;
-import org.example.repository.UserRepository;
 import org.springframework.data.crossstore.ChangeSetPersister;
 
 import org.springframework.http.*;
@@ -31,6 +27,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Service
@@ -40,6 +37,7 @@ public class HospitalService {
     private final UserRepository userRepository;
     private final HospitalManagerRepository hospitalManagerRepository;
     private final ReviewRepository reviewRepository;
+    private final UserRoleRepository userRoleRepository;
 
     @Transactional
     public List<HospitalResponse> getLocationSearch(HospitalLocation location) {
@@ -95,17 +93,14 @@ public class HospitalService {
     public void hospital_manage(String username,String role) throws ChangeSetPersister.NotFoundException {
         UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(ChangeSetPersister.NotFoundException::new);
         HospitalManagerEntity hospitalManagerEntity = hospitalManagerRepository.findByUser(userEntity).orElseThrow(ChangeSetPersister.NotFoundException::new);
-
         hospitalManagerEntity.setHospitalRole(role);
         hospitalManagerRepository.save(hospitalManagerEntity);
     }
 
     @Transactional
-    public void HospitalUpdate (HospitalRequest hospital) {
-        if (hospitalRepository.findByHospitalName(hospital.getHospitalName()).isEmpty()) {
-            throw new NoHospitalException();
-        }
-        HospitalEntity hospitalEntity = makeHospitalEntity(hospital);
+    public void HospitalUpdate (HospitalRequest hospital,Long id) {
+        HospitalEntity hospitalEntity = hospitalRepository.findById(id).orElseThrow(NoHospitalException::new);
+        updateHospitalEntity(hospital, hospitalEntity);
         hospitalRepository.save(hospitalEntity);
     }
 
@@ -123,12 +118,31 @@ public class HospitalService {
         hospitalRepository.save(hospitalEntity);
         log.info("save hospital is good");
 
-        UserEntity user = userRepository.findByUsername(username).orElseThrow(ChangeSetPersister.NotFoundException::new);
-        UserRoleEntity userRoleEntity = new UserRoleEntity();
-        userRoleEntity.setUser(user);
-        userRoleEntity.setRole("ROLE_HOSPITAL");
-        user.getUserRoles().add(userRoleEntity);
-        userRepository.save(user);
+        UserEntity user = userRepository.findByUsername(username).orElseThrow();
+
+        AtomicBoolean exist = new AtomicBoolean(false);
+        user.getUserRoles().forEach(e -> {
+                    if(e.getRole().matches("ROLE_HOSPITAL")){
+                        exist.set(true);
+                    }
+        });
+
+        if(!exist.get()) {
+            UserRoleEntity userRoleEntity = new UserRoleEntity();
+            userRoleEntity.setUser(user);
+            userRoleEntity.setRole("ROLE_HOSPITAL");
+            userRoleRepository.save(userRoleEntity);
+            user.getUserRoles().add(userRoleEntity);
+            userRepository.save(user);
+
+            HospitalManagerEntity hospitalManagerEntity = new HospitalManagerEntity();
+            hospitalManagerEntity.setUser(user);
+            hospitalManagerEntity.setHospital(hospitalEntity);
+            hospitalManagerEntity.setHospitalRole("의료업무");
+            hospitalManagerRepository.save(hospitalManagerEntity);
+        }
+
+
         log.info("save is good");
 
         return true;
@@ -147,6 +161,7 @@ public class HospitalService {
 
         HospitalResponse hospital = new HospitalResponse();
 
+        hospital.setId(hospital.getId());
         hospital.setHospitalName(hospitalEntity.getHospitalName());
         hospital.setHospitalOpneDate(hospitalEntity.getHospitalOpenDate());
         hospital.setHospitalCloseDate(hospitalEntity.getHospitalCloseDate());
@@ -173,6 +188,23 @@ public class HospitalService {
                 .longitude(coordinates.longitude())
                 .build();
         return hospitalEntity;
+    }
+
+    public HospitalEntity updateHospitalEntity(HospitalRequest hospital, HospitalEntity hos) {
+        log.info(hospital.getHospitalName());
+        HospitalLocation coordinates = getCoordinates(hospital.getHospitalAddress());
+        hos = HospitalEntity.builder()
+                .hospitalName(hospital.getHospitalName())
+                .hospitalOpenDate(hospital.getHospitalOpneDate())
+                .hospitalCloseDate(hospital.getHospitalCloseDate())
+                .hospitalDescription(hospital.getHospitalDescription())
+                .hospitalType(hospital.getHospitalType())
+                .address(hospital.getHospitalAddress())
+                .number(hospital.getPhoneNumber())
+                .latitude(coordinates.latitude())
+                .longitude(coordinates.longitude())
+                .build();
+        return hos;
     }
     public HospitalLocation getCoordinates(String address) {
         log.info(address);

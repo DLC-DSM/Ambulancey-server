@@ -2,7 +2,11 @@ package org.example.global.auth.user.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.example.domain.hospital.dto.HospitalRequest;
+import org.example.domain.hospital.service.HospitalService;
 import org.example.global.auth.user.CustomUserDetails;
+import org.example.global.auth.user.dto.HospitalUser;
 import org.example.global.auth.user.dto.User;
 import org.example.global.auth.user.dto.UserReq;
 import org.example.global.auth.user.dto.UserResponse;
@@ -13,16 +17,31 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserManagementController {
 
     private final UserManagementService userManagementService;
+    private final HospitalService hospitalService;
 
     @PostMapping("/register")
     public void  userRegister(@RequestBody UserReq user) {
         userManagementService.registerUser(user);
+    }
+
+    @PostMapping("/hospital_register")
+    public ResponseEntity<Object> hospitalRegister(@RequestBody HospitalUser user) throws Exception {
+        User userE = new User();
+        userE.setUsername(user.getUsername());
+        userE.setPassword(user.getPassword());
+
+        log.info(userE.getUsername());
+
+        userManagementService.registerUser(userE);
+        hospitalService.application(user,user.getUsername());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/info")

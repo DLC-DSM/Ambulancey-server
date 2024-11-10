@@ -50,7 +50,7 @@ public class SecurityConfig{
                 .logout(logout -> logout.logoutUrl("/user/logout"))
                 .authorizeHttpRequests(authorizeRequests ->
                             authorizeRequests
-                                    .requestMatchers("/user/login","/user/register").permitAll()
+                                    .requestMatchers("/user/login","/user/register","/user/hospital_register").permitAll()
                                     .requestMatchers("/hospital/application","/hospital/list","hospital/info").hasAuthority("ROLE_USER")
                                     .requestMatchers("/hospital/*").hasAuthority("ROLE_HOSPITAL")
                                     .anyRequest().authenticated()

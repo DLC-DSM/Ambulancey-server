@@ -10,7 +10,7 @@ import org.example.domain.User.UserEntity;
 @Data
 public class ReviewEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
     private Long id;
 

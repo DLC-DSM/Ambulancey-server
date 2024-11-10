@@ -7,6 +7,7 @@ import org.example.domain.review.dto.ReviewRequest;
 import org.example.domain.review.exception.ReviewNotFoundException;
 import org.example.repository.HospitalRepository;
 import org.example.repository.ReviewRepository;
+import org.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,24 +15,30 @@ import org.springframework.stereotype.Service;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final HospitalRepository hospitalRepository;
+    private final UserRepository userRepository;
 
-    public void insert(ReviewRequest reviewRequest) {
+    public void insert(ReviewRequest reviewRequest,String username) {
         ReviewEntity review = new ReviewEntity();
         review.setHospital(hospitalRepository.findById(reviewRequest.hospital_id()).orElseThrow(NoHospitalException::new));
+        review.setUser(userRepository.findByUsername(username).orElseThrow());
         review.setContent(reviewRequest.content());
         review.setStar(reviewRequest.star());
         reviewRepository.save(review);
     }
 
-    public void update(ReviewRequest reviewRequest) {
+    public void update(ReviewRequest reviewRequest, String username) {
         ReviewEntity review = reviewRepository.findById(reviewRequest.review_id()).orElseThrow(ReviewNotFoundException::new);
         review.setContent(reviewRequest.content());
         review.setStar(reviewRequest.star());
-        reviewRepository.save(review);
+        if (review.getUser().getUsername().equals(username)) {
+            reviewRepository.save(review);
+        }
     }
 
-    public void delete(ReviewRequest reviewRequest) {
+    public void delete(ReviewRequest reviewRequest, String username) {
         ReviewEntity review = reviewRepository.findById(reviewRequest.review_id()).orElseThrow(ReviewNotFoundException::new);
-        reviewRepository.delete(review);
+        if (review.getUser().getUsername().equals(username)){
+            reviewRepository.delete(review);
+        }
     }
 }
