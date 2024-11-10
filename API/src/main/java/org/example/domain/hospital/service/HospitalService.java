@@ -161,7 +161,7 @@ public class HospitalService {
 
         HospitalResponse hospital = new HospitalResponse();
 
-        hospital.setId(hospital.getId());
+        hospital.setId(hospitalEntity.getId());
         hospital.setHospitalName(hospitalEntity.getHospitalName());
         hospital.setHospitalOpneDate(hospitalEntity.getHospitalOpenDate());
         hospital.setHospitalCloseDate(hospitalEntity.getHospitalCloseDate());
