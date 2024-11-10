@@ -6,7 +6,7 @@ import org.example.domain.Hospital.HospitalEntity;
 import org.example.domain.User.UserEntity;
 
 @Entity
-@Table
+@Table(name = "hospital_review")
 @Data
 public class ReviewEntity {
     @Id
@@ -14,16 +14,17 @@ public class ReviewEntity {
     @Column(name = "review_id")
     private Long id;
 
-    @Column(name = "content_id", nullable = false)
+    @Column(name = "review", nullable = false)
     private String content;
 
     @Column(nullable = false)
     private Double star;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = UserEntity.class)
+    @JoinColumn(name = "user_key")
     private UserEntity user;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = HospitalEntity.class)
     private HospitalEntity hospital;
 
 }

@@ -42,15 +42,11 @@ public class HospitalService {
     private final ReviewRepository reviewRepository;
 
     @Transactional
-    public List<HospitalResponse> getLocationSearch(@Valid HospitalLocation location) {
+    public List<HospitalResponse> getLocationSearch(HospitalLocation location) {
         List<HospitalEntity> entity = hospitalRepository.findAll();
         entity.sort((a, b)->{
-            double aLatitude = a.getLatitude()-location.latitude()*a.getLatitude()-location.latitude();
-            double aLongitude = a.getLongitude()-location.longitude()*a.getLongitude()-location.longitude();
-            double aDistance = aLatitude+aLongitude;
-            double bLatitude = b.getLatitude()-location.latitude()*b.getLatitude()-location.latitude();
-            double bLongitude = b.getLongitude()-location.longitude()*b.getLongitude()-location.longitude();
-            double bDistance = bLatitude+bLongitude;
+            double aDistance = calculateDistance(a.getLatitude(), a.getLongitude(), location.latitude(), location.longitude());
+            double bDistance = calculateDistance(b.getLatitude(), b.getLongitude(), location.latitude(), location.longitude());
             return Double.compare(aDistance, bDistance);
         });
         List<HospitalResponse> hospitals = new ArrayList<>();
@@ -63,9 +59,28 @@ public class HospitalService {
 
     }
 
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final double R = 6371; // 지구의 반지름 (킬로미터 단위)
+        double lat1Rad = Math.toRadians(lat1); // 위도 라디안으로 변환
+        double lon1Rad = Math.toRadians(lon1); // 경도 라디안으로 변환
+        double lat2Rad = Math.toRadians(lat2); // 위도 라디안으로 변환
+        double lon2Rad = Math.toRadians(lon2); // 경도 라디안으로 변환
+
+        double dLat = lat2Rad - lat1Rad; // 위도 차이
+        double dLon = lon2Rad - lon1Rad; // 경도 차이
+
+        // Haversine 공식 계산
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1Rad) * Math.cos(lat2Rad) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c; // 킬로미터 단위의 거리 반환
+    }
+
     @Transactional
-    public HospitalResponse getHospital(String hospitalName) {
-        HospitalEntity hospitalEntity = hospitalRepository.findByHospitalName(hospitalName).orElseThrow(NoHospitalException::new);
+    public HospitalResponse getHospital(Long hospitalId) {
+        HospitalEntity hospitalEntity = hospitalRepository.findById(hospitalId).orElseThrow(NoHospitalException::new);
         return makeHospital(hospitalEntity);
 
     }
