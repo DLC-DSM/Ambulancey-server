@@ -15,6 +15,8 @@ import java.util.Date;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class HospitalRequest {
 
+    private Long id;
+
     private String hospitalName;
 
     @JsonProperty("discrption")

@@ -1,6 +1,7 @@
 package org.example.domain.hospital.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.domain.Hospital.HospitalEntity;
@@ -43,7 +44,7 @@ public class hospitalController{
 
     @PutMapping("/update")
     public void hospitalUpdate(HospitalRequest hospital){
-        hospitalService.HospitalUpdate(hospital);
+        hospitalService.HospitalUpdate(hospital,hospital.getId());
     }
 
     @DeleteMapping("/resign")
@@ -52,18 +53,21 @@ public class hospitalController{
     }
 
     @GetMapping("/list")
-    public ResponseEntity<? extends Object> getHospitalList(@Valid HospitalLocation location){
+    public ResponseEntity<? extends Object> getHospitalList(@RequestBody HospitalLocation location){
+        log.info(String.valueOf(location.longitude()));
         List<HospitalResponse> list = hospitalService.getLocationSearch(location);
         return new ResponseEntity<List>(list, HttpStatusCode.valueOf(200));
     }
 
     @GetMapping("/info")
-    public ResponseEntity<? extends Object> getHospitalInfo(String hospitalName){
+    public ResponseEntity<? extends Object> getHospitalInfo(@NotNull Long id){
 
-        HospitalResponse hospitalResponse = hospitalService.getHospital(hospitalName);
+        HospitalResponse hospitalResponse = hospitalService.getHospital(id);
 
         return ResponseEntity.ok(hospitalResponse);
     }
+
+
 
 
 

@@ -53,7 +53,7 @@ public class HospitalEntity{
     @Column(name = "hospital_address", nullable = false)
     private String address;
 
-    @OneToMany(mappedBy = "hospitalId")
+    @OneToMany
     private List<HospitalReviewEntity> reviews;
 
     @Column(name = "latitude", nullable = false)

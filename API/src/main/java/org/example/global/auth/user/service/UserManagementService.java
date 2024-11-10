@@ -11,6 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserManagementService {
@@ -22,15 +25,24 @@ public class UserManagementService {
 
     @Transactional
     public void registerUser(User user) {
+        if(userRepository.findByUsername(user.getUsername()).isPresent()) {
+            return;
+        }
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(user.getUsername());
         userEntity.setPassword(encoder.encode(user.getPassword()));
-        userRepository.save(userEntity);
 
-        userEntity = userRepository.findByUsername(user.getUsername()).orElseThrow(CannotFoundUserException::new);
+
+
         UserRoleEntity userRoleEntity = new UserRoleEntity();
         userRoleEntity.setUser(userEntity);
         userRoleEntity.setRole("ROLE_USER");
+
+        List<UserRoleEntity> userRoleEntities = new ArrayList<>();
+        userRoleEntities.add(userRoleEntity);
+        userEntity.setUserRoles(userRoleEntities);
+
+        userRepository.save(userEntity);
         userRoleRepository.save(userRoleEntity);
     }
 
