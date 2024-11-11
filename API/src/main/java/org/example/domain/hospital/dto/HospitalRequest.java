@@ -13,13 +13,15 @@ import java.util.Date;
 
 @Data
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+
 public class HospitalRequest {
 
     private Long id;
 
+    @JsonProperty("hospital_name")
     private String hospitalName;
 
-    @JsonProperty("discrption")
+    @JsonProperty("description")
     private String hospitalDescription;
 
     //@LocalAddress

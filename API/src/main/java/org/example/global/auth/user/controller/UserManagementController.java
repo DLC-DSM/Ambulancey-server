@@ -17,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalTime;
+
 @Slf4j
 @RestController
 @RequestMapping("/user")
@@ -33,14 +35,28 @@ public class UserManagementController {
 
     @PostMapping("/hospital_register")
     public ResponseEntity<Object> hospitalRegister(@RequestBody HospitalUser user) throws Exception {
+        if(!user.getAuthentication_key().equals("G7f6fG7GN6TFd5d67Hyvr5d576F67GNYVNytv76yuWZ33S4dfY8UkoPp")){
+            return ResponseEntity.badRequest().build();
+        }
         User userE = new User();
-        userE.setUsername(user.getUsername());
+        userE.setUsername(user.getHospitalName());
         userE.setPassword(user.getPassword());
 
         log.info(userE.getUsername());
 
-        userManagementService.registerUser(userE);
-        hospitalService.application(user,user.getUsername());
+        HospitalRequest hospitalRequest = new HospitalRequest();
+        {
+            hospitalRequest.setHospitalAddress(user.getHospitalAddress());
+            hospitalRequest.setHospitalDescription(user.getHospitalDescription());
+            hospitalRequest.setHospitalType(user.getHospitalType());
+            hospitalRequest.setHospitalOpneDate(user.getHospitalOpneDate());
+            hospitalRequest.setHospitalCloseDate(user.getHospitalCloseDate());
+            hospitalRequest.setPhoneNumber(user.getPhoneNumber());
+            hospitalRequest.setHospitalName(user.getHospitalName());
+        }
+        userManagementService.registerHospital(userE);
+        hospitalService.application(hospitalRequest,user.getHospitalName());
+
         return ResponseEntity.ok().build();
     }
 

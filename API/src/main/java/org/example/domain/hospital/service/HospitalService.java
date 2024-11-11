@@ -12,6 +12,7 @@ import org.example.domain.hospital.dto.*;
 import org.example.domain.hospital.exception.InvalidAddressException;
 import org.example.domain.hospital.exception.NoHospitalException;
 import org.example.domain.review.ReviewEntity;
+import org.example.global.auth.user.exception.AlreadyRegisteredException;
 import org.example.repository.*;
 
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -106,10 +107,11 @@ public class HospitalService {
 
     @Transactional
     public boolean application(HospitalRequest hospital,String username) throws Exception {
+        if(hospitalRepository.findByHospitalName(hospital.getHospitalName()).isPresent()){
 
-        if(!hospitalRepository.findByHospitalName(hospital.getHospitalName()).isEmpty()){
-            return false;
+            throw AlreadyRegisteredException.EXCEPTION;
         }
+
         HospitalEntity hospitalEntity = makeHospitalEntity(hospital);
 
         log.info(hospitalEntity.getHospitalName());
