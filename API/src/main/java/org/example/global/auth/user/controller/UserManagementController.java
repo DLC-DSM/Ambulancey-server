@@ -65,8 +65,6 @@ public class UserManagementController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         UserResponse user = new UserResponse();
         user.setUsername(userDetails.getUsername());
-        user.setPassword(userDetails.getPassword());
-        user.setAuthorities(userDetails.authorities());
         return ResponseEntity.ok(user);
     }
 
