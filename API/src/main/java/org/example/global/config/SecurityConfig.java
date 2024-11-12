@@ -54,7 +54,7 @@ public class SecurityConfig{
                                     .requestMatchers("/user/*", "/hospital/application","/hospital/list","hospital/info").hasAuthority("ROLE_USER")
                                     .requestMatchers("/hospital/*").hasAuthority("ROLE_HOSPITAL")
                                     .anyRequest().authenticated()
-                                    .anyRequest().permitAll()
+                                    //.anyRequest().permitAll()
                 )
 
                 .userDetailsService(customUserDetailsService)

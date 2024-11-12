@@ -1,6 +1,7 @@
 package org.example.global.exception;
 
 import org.example.global.ResponseObject;
+import org.example.global.auth.user.exception.CannotFoundUserException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -35,5 +36,10 @@ public class GlobalExceptionHandler {
         }
 
         return new ResponseEntity<>(errorList, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CannotFoundUserException.class)
+    public ResponseEntity<String> handleCannotFoundUserException(CannotFoundUserException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
