@@ -241,4 +241,10 @@ public class HospitalService {
 
         return coordinates;
     }
+
+    @Transactional
+    public Long getHospitalIdByUser(String username) {
+        HospitalManagerEntity hospitalManager = hospitalManagerRepository.findByUser(userRepository.findByUsername(username).orElseThrow()).orElseThrow();
+        return hospitalManager.getId();
+    }
 }

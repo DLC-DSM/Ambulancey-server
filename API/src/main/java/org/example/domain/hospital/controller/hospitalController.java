@@ -68,6 +68,12 @@ public class hospitalController{
         return ResponseEntity.ok(hospitalResponse);
     }
 
+    @GetMapping("/id_info")
+    public ResponseEntity<? extends Object> getHospitalIdInfo(Authentication authentication){
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long id = hospitalService.getHospitalIdByUser(customUserDetails.username());
+        return ResponseEntity.ok(id);
+    }
 
 
 
