@@ -2,6 +2,7 @@ package org.example.domain.hospital.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.domain.Hospital.HospitalEntity;
@@ -59,8 +60,8 @@ public class hospitalController{
         return new ResponseEntity<List>(list, HttpStatusCode.valueOf(200));
     }
 
-    @GetMapping("/info")
-    public ResponseEntity<? extends Object> getHospitalInfo(@NotNull Long id){
+    @GetMapping("/info/{id}")
+    public ResponseEntity<? extends Object> getHospitalInfo(@PathVariable("id") Long id){
 
         HospitalResponse hospitalResponse = hospitalService.getHospital(id);
 
