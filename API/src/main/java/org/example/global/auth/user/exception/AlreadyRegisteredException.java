@@ -8,5 +8,4 @@ public class AlreadyRegisteredException extends CustomException {
     private AlreadyRegisteredException() {
         super (ErrorList.ALREADY_REGISTERED);
     }
-
 }

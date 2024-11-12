@@ -79,14 +79,14 @@ public class HospitalService {
 
     @Transactional
     public HospitalResponse getHospital(Long hospitalId) {
-        HospitalEntity hospitalEntity = hospitalRepository.findById(hospitalId).orElseThrow(NoHospitalException::new);
+        HospitalEntity hospitalEntity = hospitalRepository.findById(hospitalId).orElseThrow(()->NoHospitalException.hospitalException);
         return makeHospital(hospitalEntity);
 
     }
 
     @Transactional
     public void deleteHospital(String hospitalName) {
-        HospitalEntity hospitalEntity = hospitalRepository.findByHospitalName(hospitalName).orElseThrow(NoHospitalException::new);
+        HospitalEntity hospitalEntity = hospitalRepository.findByHospitalName(hospitalName).orElseThrow(()->NoHospitalException.hospitalException);
         hospitalRepository.delete(hospitalEntity);
     }
 
@@ -100,7 +100,7 @@ public class HospitalService {
 
     @Transactional
     public void HospitalUpdate (HospitalRequest hospital,Long id) {
-        HospitalEntity hospitalEntity = hospitalRepository.findById(id).orElseThrow(NoHospitalException::new);
+        HospitalEntity hospitalEntity = hospitalRepository.findById(id).orElseThrow(()->NoHospitalException.hospitalException);
         updateHospitalEntity(hospital, hospitalEntity);
         hospitalRepository.save(hospitalEntity);
     }
@@ -232,11 +232,11 @@ public class HospitalService {
                 double x = locationNode.path("x").asDouble();
                 coordinates = new HospitalLocation(y, x);
             } else {
-                throw new InvalidAddressException();
+                throw InvalidAddressException.hospitalException;
             }
         } catch (Exception e) {
             log.error("Error parsing coordinates from response", e);
-            throw new InvalidAddressException();
+            throw InvalidAddressException.hospitalException;
         }
 
         return coordinates;

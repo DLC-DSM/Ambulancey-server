@@ -4,7 +4,7 @@ import org.example.global.exception.CustomException;
 import org.example.global.exception.ErrorList;
 
 public class CannotFoundUserException extends CustomException {
-    public CannotFoundUserException cannotFoundUserException = new CannotFoundUserException();
+    public static final CannotFoundUserException cannotFoundUserException = new CannotFoundUserException();
     public CannotFoundUserException() {
         super(ErrorList.USER_NO_EXIST);
     }

@@ -4,8 +4,8 @@ import org.example.global.exception.CustomException;
 import org.example.global.exception.ErrorList;
 
 public class InvalidAddressException extends CustomException {
-    InvalidAddressException hospitalException = new InvalidAddressException();
+    public static final InvalidAddressException hospitalException = new InvalidAddressException();
     public InvalidAddressException() {
-        super(ErrorList.Invalid_Address);
+        super(ErrorList.INVALID_ADDRESS);
     }
 }

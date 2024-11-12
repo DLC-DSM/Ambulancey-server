@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("들어옴");
         log.info("username: {}", username);
-       UserEntity user = userRepository.findByUsername(username).orElseThrow(CannotFoundUserException::new);
+       UserEntity user = userRepository.findByUsername(username).orElseThrow(()->CannotFoundUserException.cannotFoundUserException);
 
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getUserRoles().forEach(role -> {

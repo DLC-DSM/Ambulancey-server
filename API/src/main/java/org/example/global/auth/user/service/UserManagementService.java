@@ -35,7 +35,7 @@ public class UserManagementService {
         userEntity.setPassword(encoder.encode(user.getPassword()));
 
         if(user.getUsername().contains("병원")){
-            throw new NotAllowedUsernameException();
+            throw NotAllowedUsernameException.EXCEPTION;
         }
 
         UserRoleEntity userRoleEntity = new UserRoleEntity();
@@ -76,12 +76,12 @@ public class UserManagementService {
     @Transactional
     public void deleteUser(String username) {
         UserEntity userEntity = userRepository.findByUsername(username)
-                .orElseThrow(CannotFoundUserException::new);
+                .orElseThrow(()->CannotFoundUserException.cannotFoundUserException);
         userRepository.delete(userEntity);
     }
 
     public void updateUsername(User user, String username) {
-        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(CannotFoundUserException::new);
+        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(()->CannotFoundUserException.cannotFoundUserException);
         userEntity.setUsername(user.getUsername());
         userEntity.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(userEntity);
