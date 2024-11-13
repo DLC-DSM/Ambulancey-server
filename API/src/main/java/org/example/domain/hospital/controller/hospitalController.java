@@ -10,6 +10,7 @@ import org.example.domain.hospital.dto.HospitalLocation;
 import org.example.domain.hospital.dto.HospitalRequest;
 import org.example.domain.hospital.dto.HospitalResponse;
 import org.example.domain.hospital.service.HospitalService;
+import org.example.global.ResponseObject;
 import org.example.global.auth.user.CustomUserDetails;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatusCode;
@@ -72,7 +73,11 @@ public class hospitalController{
     public ResponseEntity<? extends Object> getHospitalIdInfo(Authentication authentication){
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         Long id = hospitalService.getHospitalIdByUser(customUserDetails.username());
-        return ResponseEntity.ok(id);
+        ResponseObject responseObject = ResponseObject.builder()
+                .statusCode("200")
+                .data(id)
+                .build();
+        return new ResponseEntity<>(responseObject, HttpStatusCode.valueOf(200));
     }
 
 

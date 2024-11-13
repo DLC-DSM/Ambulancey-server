@@ -244,7 +244,8 @@ public class HospitalService {
 
     @Transactional
     public Long getHospitalIdByUser(String username) {
-        HospitalManagerEntity hospitalManager = hospitalManagerRepository.findByUser(userRepository.findByUsername(username).orElseThrow()).orElseThrow();
+        UserEntity user = userRepository.findByUsername(username).orElseThrow();
+        HospitalManagerEntity hospitalManager = hospitalManagerRepository.findByUser(user).orElseThrow();
         return hospitalManager.getId();
     }
 }

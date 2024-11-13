@@ -35,9 +35,9 @@ public class UserManagementController {
 
     @PostMapping("/hospital_register")
     public ResponseEntity<Object> hospitalRegister(@RequestBody HospitalUser user) throws Exception {
-        if(!user.getAuthentication_key().equals("G7f6fG7GN6TFd5d67Hyvr5d576F67GNYVNytv76yuWZ33S4dfY8UkoPp")){
-            return ResponseEntity.badRequest().build();
-        }
+//        if(!user.getAuthentication_key().equals("G7f6fG7GN6TFd5d67Hyvr5d576F67GNYVNytv76yuWZ33S4dfY8UkoPp")){
+//            return ResponseEntity.badRequest().build();
+//        }
         User userE = new User();
         userE.setUsername(user.getHospitalName());
         userE.setPassword(user.getPassword());
@@ -45,7 +45,7 @@ public class UserManagementController {
         log.info(userE.getUsername());
 
         HospitalRequest hospitalRequest = new HospitalRequest();
-        {
+
             hospitalRequest.setHospitalAddress(user.getHospitalAddress());
             hospitalRequest.setHospitalDescription(user.getHospitalDescription());
             hospitalRequest.setHospitalType(user.getHospitalType());
@@ -53,7 +53,7 @@ public class UserManagementController {
             hospitalRequest.setHospitalCloseDate(user.getHospitalCloseDate());
             hospitalRequest.setPhoneNumber(user.getPhoneNumber());
             hospitalRequest.setHospitalName(user.getHospitalName());
-        }
+
         userManagementService.registerHospital(userE);
         hospitalService.application(hospitalRequest,user.getHospitalName());
 

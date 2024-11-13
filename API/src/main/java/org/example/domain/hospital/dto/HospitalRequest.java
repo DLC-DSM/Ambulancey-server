@@ -32,11 +32,11 @@ public class HospitalRequest {
     private String hospitalType;
 
     @JsonProperty("open_time")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime hospitalOpneDate;
 
     @JsonProperty("close_time")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime hospitalCloseDate;
 
     //@PhoneNumber
