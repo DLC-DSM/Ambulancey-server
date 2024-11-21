@@ -4,7 +4,6 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-API/src/main/resources/application-aws.yml
 
 ### STS ###
 .apt_generated
@@ -19,6 +18,9 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+API/src/main/resources/application-aws.yml
+
+
 .idea
 *.iws
 *.iml
