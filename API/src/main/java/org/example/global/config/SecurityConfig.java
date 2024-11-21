@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.example.global.auth.token.JwtProvider;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity//(debug = true)
 @RequiredArgsConstructor
 public class SecurityConfig{
 

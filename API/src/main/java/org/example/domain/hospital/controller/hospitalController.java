@@ -9,6 +9,7 @@ import org.example.domain.Hospital.HospitalEntity;
 import org.example.domain.hospital.dto.HospitalLocation;
 import org.example.domain.hospital.dto.HospitalRequest;
 import org.example.domain.hospital.dto.HospitalResponse;
+import org.example.domain.hospital.dto.HospitalUpdateRequest;
 import org.example.domain.hospital.service.HospitalService;
 import org.example.global.ResponseObject;
 import org.example.global.auth.user.CustomUserDetails;
@@ -45,16 +46,18 @@ public class hospitalController{
     }
 
     @PutMapping("/update")
-    public void hospitalUpdate(HospitalRequest hospital){
+    public ResponseEntity<Object> hospitalUpdate(@RequestBody HospitalUpdateRequest hospital){
+        log.info(String.valueOf(hospital.getId()));
         hospitalService.HospitalUpdate(hospital,hospital.getId());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/resign")
-    public void hospitalResign(String hospitalName){
+    public void hospitalResign(@RequestBody String hospitalName){
         hospitalService.deleteHospital(hospitalName);
     }
 
-    @PostMapping("/list")
+    @GetMapping("/list")
     public ResponseEntity<? extends Object> getHospitalList(@RequestBody HospitalLocation location){
         log.info(String.valueOf(location.longitude()));
         List<HospitalResponse> list = hospitalService.getLocationSearch(location);

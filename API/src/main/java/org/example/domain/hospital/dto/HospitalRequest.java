@@ -16,6 +16,7 @@ import java.util.Date;
 
 public class HospitalRequest {
 
+    @JsonProperty("id")
     private Long id;
 
     @JsonProperty("hospital_name")
@@ -24,7 +25,7 @@ public class HospitalRequest {
     @JsonProperty("description")
     private String hospitalDescription;
 
-    //@LocalAddress
+    @LocalAddress
     @JsonProperty("address")
     private String hospitalAddress;
 
@@ -39,7 +40,7 @@ public class HospitalRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime hospitalCloseDate;
 
-    //@PhoneNumber
+    @PhoneNumber
     @JsonProperty("phone")
     private String phoneNumber;
 

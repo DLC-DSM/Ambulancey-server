@@ -99,9 +99,9 @@ public class HospitalService {
     }
 
     @Transactional
-    public void HospitalUpdate (HospitalRequest hospital,Long id) {
+    public void HospitalUpdate (HospitalUpdateRequest hospital,Long id) {
         HospitalEntity hospitalEntity = hospitalRepository.findById(id).orElseThrow(()->NoHospitalException.hospitalException);
-        updateHospitalEntity(hospital, hospitalEntity);
+        hospitalEntity = updateHospitalEntity(hospital, hospitalEntity);
         hospitalRepository.save(hospitalEntity);
     }
 
@@ -192,7 +192,7 @@ public class HospitalService {
         return hospitalEntity;
     }
 
-    public HospitalEntity updateHospitalEntity(HospitalRequest hospital, HospitalEntity hos) {
+    public HospitalEntity updateHospitalEntity(HospitalUpdateRequest hospital, HospitalEntity hos) {
         log.info(hospital.getHospitalName());
         HospitalLocation coordinates = getCoordinates(hospital.getHospitalAddress());
         hos = HospitalEntity.builder()
@@ -205,7 +205,10 @@ public class HospitalService {
                 .number(hospital.getPhoneNumber())
                 .latitude(coordinates.latitude())
                 .longitude(coordinates.longitude())
+                .reviews(hos.getReviews())
                 .build();
+        hos.setId(hospital.getId());
+
         return hos;
     }
     public HospitalLocation getCoordinates(String address) {

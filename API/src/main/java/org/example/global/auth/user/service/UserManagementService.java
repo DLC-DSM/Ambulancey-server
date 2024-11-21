@@ -82,8 +82,10 @@ public class UserManagementService {
 
     public void updateUsername(User user, String username) {
         UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(()->CannotFoundUserException.cannotFoundUserException);
-        userEntity.setUsername(user.getUsername());
-        userEntity.setPassword(encoder.encode(user.getPassword()));
+        if(!userEntity.getUsername().isEmpty())
+            userEntity.setUsername(user.getUsername());
+        if(!userEntity.getPassword().isEmpty())
+            userEntity.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(userEntity);
     }
 

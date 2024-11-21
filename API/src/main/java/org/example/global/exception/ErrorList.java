@@ -12,7 +12,8 @@ public enum ErrorList {
     INVALID_ADDRESS("INVALID_ADDRESS",HttpStatusCode.valueOf(400)),
     REVIEW_NOT_FOUND("REVIEW_NOT_FOUND",HttpStatusCode.valueOf(400)),
     ALREADY_REGISTERED("ALREADY_REGISTERED",HttpStatusCode.valueOf(400)),
-    NOT_ALLOWED_USERNAME_EXCEPTION("NOT_ALLOWED_USERNAME_EXCEPTION", HttpStatusCode.valueOf(400));
+    NOT_ALLOWED_USERNAME_EXCEPTION("NOT_ALLOWED_USERNAME_EXCEPTION", HttpStatusCode.valueOf(400)),
+    NOT_INSERT_IMAGE("NOT_INSERT_IMAGE",HttpStatusCode.valueOf(400));
 
     private final String error;
     private final HttpStatusCode statusCode;

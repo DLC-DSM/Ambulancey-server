@@ -1,19 +1,20 @@
 package org.example.domain.hospital.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import jakarta.persistence.Id;
 import lombok.Data;
 import org.example.annotation.LocalAddress;
 import org.example.annotation.PhoneNumber;
 
 import java.time.LocalTime;
-import java.util.Date;
-import java.util.List;
 
-@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 @Data
-public class HospitalResponse {
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+
+public class HospitalUpdateRequest {
+
 
     private Long id;
 
@@ -26,13 +27,13 @@ public class HospitalResponse {
 
     private String hospitalType;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime hospitalOpneDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime hospitalCloseDate;
 
     @PhoneNumber
     private String phoneNumber;
-
-    private List<HospitalReviewsResponse> hospitalReviews;
 
 }

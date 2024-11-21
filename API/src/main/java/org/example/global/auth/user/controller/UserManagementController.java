@@ -41,7 +41,7 @@ public class UserManagementController {
         User userE = new User();
         userE.setUsername(user.getHospitalName());
         userE.setPassword(user.getPassword());
-
+        //userE.setEmail(user.getEmail());
         log.info(userE.getUsername());
 
         HospitalRequest hospitalRequest = new HospitalRequest();
