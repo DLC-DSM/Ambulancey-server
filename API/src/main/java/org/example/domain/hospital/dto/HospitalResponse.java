@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import lombok.Data;
 import org.example.annotation.LocalAddress;
 import org.example.annotation.PhoneNumber;
+import org.example.domain.image.dto.ImageResponse;
 
 import java.time.LocalTime;
 import java.util.Date;
@@ -34,5 +35,6 @@ public class HospitalResponse {
     private String phoneNumber;
 
     private List<HospitalReviewsResponse> hospitalReviews;
+    private List<ImageResponse> images;
 
 }

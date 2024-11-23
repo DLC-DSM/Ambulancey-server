@@ -3,26 +3,23 @@ package org.example.domain.image;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.example.domain.Hospital.HospitalEntity;
+import org.example.domain.disease.DiseaseEntity;
 
 @Entity
-@Table(name = "image_data")
+@Table(name = "disease_image_data")
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Data
-public class ImageEntity {
+public class DiseaseImageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "hospital_id")
-    private HospitalEntity hospitalEntity;
+    @JoinColumn(name = "disease_id")
+    private DiseaseEntity diseaseEntity;
 
-    @Column(name = "url")
     private String url;
 }

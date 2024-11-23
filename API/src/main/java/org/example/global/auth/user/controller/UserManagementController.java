@@ -55,7 +55,7 @@ public class UserManagementController {
             hospitalRequest.setHospitalName(user.getHospitalName());
 
         userManagementService.registerHospital(userE);
-        hospitalService.application(hospitalRequest,user.getHospitalName());
+        hospitalService.application(hospitalRequest,user.getUsername());
 
         return ResponseEntity.ok().build();
     }

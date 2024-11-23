@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 
 import org.example.annotation.PhoneNumber;
+import org.example.domain.image.DiseaseImageEntity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -55,6 +56,9 @@ public class HospitalEntity{
 
     @OneToMany
     private List<HospitalReviewEntity> reviews;
+
+    @OneToMany
+    private List<DiseaseImageEntity> images;
 
     @Column(name = "latitude", nullable = false)
     private double latitude;

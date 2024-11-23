@@ -28,7 +28,7 @@ public class UserManagementService {
     @Transactional
     public void registerUser(User user) {
         if(userRepository.findByUsername(user.getUsername()).isPresent()) {
-            return;
+           throw AlreadyRegisteredException.EXCEPTION;
         }
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(user.getUsername());
@@ -62,7 +62,8 @@ public class UserManagementService {
 
         UserRoleEntity userRoleEntity = new UserRoleEntity();
         userRoleEntity.setUser(userEntity);
-        userRoleEntity.setRole("ROLE_HOSPITAL");
+        userRoleEntity.setRole("ROLE_USER");
+
 
         List<UserRoleEntity> userRoleEntities = new ArrayList<>();
         userRoleEntities.add(userRoleEntity);
@@ -91,6 +92,10 @@ public class UserManagementService {
 
     public UserEntity selectUserByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow();
+    }
+
+    public Long selectUserId(String username) {
+        return userRepository.findByUsername(username).orElseThrow().getId();
     }
 
     public boolean userConfirm(String username,String password){

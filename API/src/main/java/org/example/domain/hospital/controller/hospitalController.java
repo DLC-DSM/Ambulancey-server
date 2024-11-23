@@ -31,7 +31,7 @@ public class hospitalController{
     private final HospitalService hospitalService;
 
     @PostMapping("/application")
-    public ResponseEntity hospitalApplication(
+    public ResponseEntity<Object> hospitalApplication(
             @Valid
             @RequestBody
             HospitalRequest hospital,
@@ -40,6 +40,7 @@ public class hospitalController{
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         log.info("병원 application");
         log.info(hospital.getHospitalName());
+        log.info(hospital.getHospitalDescription());
         boolean ok = hospitalService.application(hospital,customUserDetails.getUsername());
         log.info("save");
         return ok ? ResponseEntity.ok(null) : ResponseEntity.badRequest().build();
@@ -48,6 +49,9 @@ public class hospitalController{
     @PutMapping("/update")
     public ResponseEntity<Object> hospitalUpdate(@RequestBody HospitalUpdateRequest hospital){
         log.info(String.valueOf(hospital.getId()));
+        log.info(hospital.getHospitalName());
+        log.info(hospital.getHospitalDescription());
+
         hospitalService.HospitalUpdate(hospital,hospital.getId());
         return ResponseEntity.ok().build();
     }

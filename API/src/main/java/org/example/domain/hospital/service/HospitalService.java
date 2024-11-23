@@ -9,10 +9,14 @@ import org.example.domain.Hospital.HospitalManagerEntity;
 import org.example.domain.User.UserEntity;
 import org.example.domain.User.UserRoleEntity;
 import org.example.domain.hospital.dto.*;
+import org.example.domain.hospital.exception.AlreadyMadeHospitalException;
 import org.example.domain.hospital.exception.InvalidAddressException;
 import org.example.domain.hospital.exception.NoHospitalException;
+import org.example.domain.image.dto.ImageResponse;
+import org.example.domain.image.service.ImageService;
 import org.example.domain.review.ReviewEntity;
 import org.example.global.auth.user.exception.AlreadyRegisteredException;
+import org.example.global.exception.CustomException;
 import org.example.repository.*;
 
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -39,6 +43,7 @@ public class HospitalService {
     private final HospitalManagerRepository hospitalManagerRepository;
     private final ReviewRepository reviewRepository;
     private final UserRoleRepository userRoleRepository;
+    private final ImageService imageService;
 
     @Transactional
     public List<HospitalResponse> getLocationSearch(HospitalLocation location) {
@@ -100,23 +105,34 @@ public class HospitalService {
 
     @Transactional
     public void HospitalUpdate (HospitalUpdateRequest hospital,Long id) {
-        HospitalEntity hospitalEntity = hospitalRepository.findById(id).orElseThrow(()->NoHospitalException.hospitalException);
-        hospitalEntity = updateHospitalEntity(hospital, hospitalEntity);
+        HospitalEntity hospitalOld = hospitalRepository.findById(id).orElseThrow(()->NoHospitalException.hospitalException);
+
+        HospitalEntity hospitalEntity = new HospitalEntity();
+        hospitalEntity.setHospitalName(hospital.getHospitalName());
+        hospitalEntity.setHospitalOpenDate(hospital.getHospitalOpneDate());
+        hospitalEntity.setHospitalCloseDate(hospital.getHospitalCloseDate());
+        hospitalEntity.setHospitalDescription(hospital.getHospitalDescription());
+        hospitalEntity.setHospitalType(hospital.getHospitalType());
+        hospitalEntity.setAddress(hospital.getHospitalAddress());
+        hospitalEntity.setNumber(hospital.getPhoneNumber());
+        hospitalEntity.setLatitude(hospitalOld.getLatitude());
+        hospitalEntity.setLongitude(hospitalOld.getLongitude());
+        hospitalEntity.setReviews(hospitalOld.getReviews());
+        hospitalEntity.setImages(hospitalOld.getImages());
+        hospitalEntity.setId(hospital.getId());
+
         hospitalRepository.save(hospitalEntity);
     }
 
     @Transactional
-    public boolean application(HospitalRequest hospital,String username) throws Exception {
+    public boolean application(HospitalRequest hospital,String username) throws CustomException {
         if(hospitalRepository.findByHospitalName(hospital.getHospitalName()).isPresent()){
 
-            throw AlreadyRegisteredException.EXCEPTION;
+            throw AlreadyMadeHospitalException.hospitalException;
         }
 
         HospitalEntity hospitalEntity = makeHospitalEntity(hospital);
 
-        log.info(hospitalEntity.getHospitalName());
-        log.info(hospitalEntity.getAddress());
-        log.info(hospitalEntity.getHospitalOpenDate().toString());
         hospitalRepository.save(hospitalEntity);
         log.info("save hospital is good");
 
@@ -142,7 +158,11 @@ public class HospitalService {
             hospitalManagerEntity.setHospital(hospitalEntity);
             hospitalManagerEntity.setHospitalRole("의료업무");
             hospitalManagerRepository.save(hospitalManagerEntity);
+        }else{
+            throw new AlreadyMadeHospitalException();
         }
+
+
 
 
         log.info("save is good");
@@ -161,6 +181,7 @@ public class HospitalService {
                 )
         ).toList();
 
+        List<ImageResponse> imageResponses = imageService.getElementImages(hospitalEntity);
         HospitalResponse hospital = new HospitalResponse();
 
         hospital.setId(hospitalEntity.getId());
@@ -172,45 +193,26 @@ public class HospitalService {
         hospital.setHospitalAddress(hospitalEntity.getAddress());
         hospital.setPhoneNumber(hospitalEntity.getNumber());
         hospital.setHospitalReviews(reviews);
+        hospital.setImages(imageResponses);
         return hospital;
     }
 
     public HospitalEntity makeHospitalEntity(HospitalRequest hospital) {
         log.info(hospital.getHospitalName());
         HospitalLocation coordinates = getCoordinates(hospital.getHospitalAddress());
-        HospitalEntity hospitalEntity = HospitalEntity.builder()
-                .hospitalName(hospital.getHospitalName())
-                .hospitalOpenDate(hospital.getHospitalOpneDate())
-                .hospitalCloseDate(hospital.getHospitalCloseDate())
-                .hospitalDescription(hospital.getHospitalDescription())
-                .hospitalType(hospital.getHospitalType())
-                .address(hospital.getHospitalAddress())
-                .number(hospital.getPhoneNumber())
-                .latitude(coordinates.latitude())
-                .longitude(coordinates.longitude())
-                .build();
+        HospitalEntity hospitalEntity = new HospitalEntity();
+        hospitalEntity.setHospitalName(hospital.getHospitalName());
+        hospitalEntity.setHospitalOpenDate(hospital.getHospitalOpneDate());
+        hospitalEntity.setHospitalCloseDate(hospital.getHospitalCloseDate());
+        hospitalEntity.setHospitalDescription(hospital.getHospitalDescription());
+        hospitalEntity.setHospitalType(hospital.getHospitalType());
+        hospitalEntity.setAddress(hospital.getHospitalAddress());
+        hospitalEntity.setNumber(hospital.getPhoneNumber());
+        hospitalEntity.setLatitude(coordinates.latitude());
+        hospitalEntity.setLongitude(coordinates.longitude());
         return hospitalEntity;
     }
 
-    public HospitalEntity updateHospitalEntity(HospitalUpdateRequest hospital, HospitalEntity hos) {
-        log.info(hospital.getHospitalName());
-        HospitalLocation coordinates = getCoordinates(hospital.getHospitalAddress());
-        hos = HospitalEntity.builder()
-                .hospitalName(hospital.getHospitalName())
-                .hospitalOpenDate(hospital.getHospitalOpneDate())
-                .hospitalCloseDate(hospital.getHospitalCloseDate())
-                .hospitalDescription(hospital.getHospitalDescription())
-                .hospitalType(hospital.getHospitalType())
-                .address(hospital.getHospitalAddress())
-                .number(hospital.getPhoneNumber())
-                .latitude(coordinates.latitude())
-                .longitude(coordinates.longitude())
-                .reviews(hos.getReviews())
-                .build();
-        hos.setId(hospital.getId());
-
-        return hos;
-    }
     public HospitalLocation getCoordinates(String address) {
         log.info(address);
         String encodedAddress = URLEncoder.encode(address, StandardCharsets.UTF_8);

@@ -25,7 +25,7 @@ public class HospitalRequest {
     @JsonProperty("description")
     private String hospitalDescription;
 
-    @LocalAddress
+    //@LocalAddress
     @JsonProperty("address")
     private String hospitalAddress;
 
