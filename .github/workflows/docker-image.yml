@@ -35,7 +35,7 @@ jobs:
       - name: Create application_aws.yml from secret
         run: |
             echo "${{ secrets.APPLICATION_AWS }}" > ./API/src/main/resources/application-aws.yml
-            cat ./path/to/your/application_aws.yml  # Ensure the content is written
+            cat ./API/src/main/resources/application-aws.yml  # Ensure the content is written
 
       - name: Deploy to server
         uses: appleboy/ssh-action@master
