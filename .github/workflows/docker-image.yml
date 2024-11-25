@@ -21,6 +21,11 @@ jobs:
           java-version: '23'
           distribution: "adopt"
 
+      - name: Create application_aws.yml from secret
+        run: |
+          echo "${{ secrets.APPLICATION_AWS }}" > ./API/src/main/resources/application-aws.yml
+          cat ./API/src/main/resources/application-aws.yml  # Ensure the content is written
+
       - name: Build with Gradle
         run: |
           chmod +x ./gradlew
@@ -32,10 +37,7 @@ jobs:
           docker build -f ./API/Dockerfile -t ${{ secrets.DOCKER_REPO }}/dev .
           docker push ${{ secrets.DOCKER_REPO }}/dev
 
-      - name: Create application_aws.yml from secret
-        run: |
-            echo "${{ secrets.APPLICATION_AWS }}" > ./API/src/main/resources/application-aws.yml
-            cat ./API/src/main/resources/application-aws.yml  # Ensure the content is written
+     
 
       - name: Deploy to server
         uses: appleboy/ssh-action@master
