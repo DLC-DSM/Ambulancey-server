@@ -61,7 +61,7 @@ public class hospitalController{
         hospitalService.deleteHospital(hospitalName);
     }
 
-    @GetMapping("/list")
+    @PostMapping("/list")
     public ResponseEntity<? extends Object> getHospitalList(@RequestBody HospitalLocation location){
         log.info(String.valueOf(location.longitude()));
         List<HospitalResponse> list = hospitalService.getLocationSearch(location);
